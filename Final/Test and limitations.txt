@@ -1,0 +1,3 @@
+The application can be launched via the jar exe file from the command line.
+It reads the pre coded sql queries from the repo file and is able to execute them.
+Limitation are: it is unable to execute the sql stored by any user as the time of sumbission.

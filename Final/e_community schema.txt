@@ -1,0 +1,68 @@
+drop database e_community;
+create database e_community;
+
+use e_community;
+
+create table role (role_id integer NOT NULL auto_increment,
+role_name varchar(32),
+constraint pk_role primary key (role_id));
+
+
+
+create table address_zip (zip varchar(10) NOT NULL UNIQUE,
+city varchar(24),
+state varchar(2),
+constraint pk_address_zip primary key (zip));
+
+
+
+create table address (address_id integer NOT NULL auto_increment,
+street varchar(32),
+zip varchar(10) NOT NULL,
+constraint pk_address primary key (address_id),
+constraint fk_address foreign key (zip) references address_zip(zip));
+
+
+
+create table user ( phone varchar(16) NOT NULL UNIQUE,
+name varchar(64),
+role_id integer NOT NULL,
+address_id integer,
+constraint fk_user_role foreign key (role_id) references role (role_id),
+constraint fk_user_address foreign key (address_id) references address (address_id),
+constraint pk_user primary key (phone));
+
+
+
+create table course (course_ID varchar(8) NOT NULL UNIQUE,
+course_name varchar(16) NOT NULL,
+required_course_for_major ENUM ('yes', 'no'),
+constraint pk_course primary key (course_ID) );
+
+
+
+create table course_user (course_ID varchar(8),
+phone varchar(16),
+constraint pk_course_user primary key (course_ID, phone),
+constraint fk_course_user1 foreign key (phone) references user (phone),
+constraint fk_course_user2 foreign key (course_ID) references course (course_ID) );
+
+create table posting (post_id integer NOT NULL UNIQUE auto_increment,
+post_content varchar(4096), 
+author_phone varchar(16) NOT NULL,
+visibility  ENUM ('private', 'public'),
+course_ID varchar(8) NOT NULL,
+constraint pk_posting primary key (post_id),
+constraint fk_posting1 foreign key (author_phone) references user (phone),
+constraint fk_posting2 foreign key (course_ID) references course (course_ID) );
+
+create table reply_posting_reference (post_id integer NOT NULL,
+                                                              reply_post_id integer NOT NULL,
+                                                               constraint pk_reply_posting_reference primary key (post_id, reply_post_id) );
+
+create table attachment (attachment_id integer NOT NULL UNIQUE auto_increment,
+reference_link varchar(128),
+file_content longblob,
+post_id integer NOT NULL,
+constraint pk_attachment primary key (attachment_id),
+constraint fk_attachment_posting foreign key (post_id) references posting (post_id) );

@@ -1,0 +1,8 @@
+select name from user where address_id in  (select address_id from address where zip in(select zip from address_zip where state = 'NJ'));
+select name,phone from user where role_id in (select role_id from role where role_name = 'professor');
+select user.name, user.phone, address.street from user, address, address_zip, (select phone from course_user where course_id =  (select course_id from course where course_name = 'Medical'))A where user.phone = A.phone AND user.address_id = address.address_id AND address.zip = address_zip.zip;
+select user.name, user.phone, address.street, address.zip, address_zip.city, address_zip.state from user, address, address_zip, (select phone from user where phone Like "718%")A where user.phone = A.phone AND user.address_id = address.address_id AND address.zip = address_zip.zip;																			
+select name, phone from user,posting, (select author_phone from posting where course_ID in (select course_ID from course where course_name like '%Data%'))A  where user.phone = A.author_phone AND posting.author_phone = A.author_phone GROUP BY name order by count(name) desc LIMIT 1;
+
+
+
